@@ -11,8 +11,6 @@
 	 unit_tests/0,
 	 unit_tests/1,
 	 unit_tests_1/2,
-	 drv_ue_test/0,
-	 drv_ue_test/1,
 	 ue_test/0,
 	 ue_test/1,
 	 verify_chunked_streaming/0,
@@ -285,13 +283,6 @@ compare_responses(R1, R2, R3) ->
     io:format("R3 -> ~p~n", [R3]),
     fail.
 
-%% do_async_req_list(Url) ->
-%%     do_async_req_list(Url, get).
-
-%% do_async_req_list(Url, Method) ->
-%%     do_async_req_list(Url, Method, [{stream_to, self()},
-%% 				    {stream_chunk_size, 1000}]).
-
 do_async_req_list(Url, Method, Options) ->
     {Pid,_} = erlang:spawn_monitor(?MODULE, i_do_async_req_list,
 				   [self(), Url, Method, 
@@ -350,20 +341,6 @@ execute_req(Url, Method, Options) ->
 	    io:format("Err -> ~p~n", [Err])
     end.
 
-drv_ue_test() ->
-    drv_ue_test(lists:duplicate(1024, 127)).
-drv_ue_test(Data) ->
-    [{port, Port}| _] = ets:lookup(ibrowse_table, port),
-%     erl_ddll:unload_driver("ibrowse_drv"),
-%     timer:sleep(1000),
-%     erl_ddll:load_driver("../priv", "ibrowse_drv"),
-%     Port = open_port({spawn, "ibrowse_drv"}, []),
-    {Time, Res} = timer:tc(ibrowse_lib, drv_ue, [Data, Port]),
-    io:format("Time -> ~p~n", [Time]),
-    io:format("Data Length -> ~p~n", [length(Data)]),
-    io:format("Res Length -> ~p~n", [length(Res)]).
-%    io:format("Result -> ~s~n", [Res]).
-
 ue_test() ->
     ue_test(lists:duplicate(1024, $?)).
 ue_test(Data) ->
@@ -371,8 +348,8 @@ ue_test(Data) ->
     io:format("Time -> ~p~n", [Time]),
     io:format("Data Length -> ~p~n", [length(Data)]),
     io:format("Res Length -> ~p~n", [length(Res)]).
-%    io:format("Result -> ~s~n", [Res]).
 
 log_msg(Fmt, Args) ->
     io:format("~s -- " ++ Fmt,
 	      [ibrowse_lib:printable_date() | Args]).
+
