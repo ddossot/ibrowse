@@ -1,0 +1,2 @@
+IBROWSE_VSN = 2.0.0
+
