@@ -426,6 +426,8 @@ do_send_req(Conn_Pid, Parsed_url, Headers, Method, Body, Options, Timeout) ->
             {error, sel_conn_closed};
         {'EXIT', Reason} ->
             {error, {'EXIT', Reason}};
+        {error, closed} ->
+            {error, connection_closed};
         {ok, St_code, Headers, Body} = Ret when is_binary(Body) ->
             case get_value(response_format, Options, list) of
                 list ->
