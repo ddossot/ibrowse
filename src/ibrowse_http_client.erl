@@ -611,13 +611,13 @@ send_req_1(From,
                 Err ->
                     shutting_down(State_1),
                     do_trace("Send failed... Reason: ~p~n", [Err]),
-                    gen_server:reply(From, Err),
+                    gen_server:reply(From, {error, send_failed}),
                     {stop, normal, State_1}
             end;
         Err ->
             shutting_down(State_1),
             do_trace("Send failed... Reason: ~p~n", [Err]),
-            gen_server:reply(From, Err),
+            gen_server:reply(From, {error, send_failed}),
             {stop, normal, State_1}
     end;
 
@@ -705,13 +705,13 @@ send_req_1(From,
                 Err ->
                     shutting_down(State_1),
                     do_trace("Send failed... Reason: ~p~n", [Err]),
-                    gen_server:reply(From, Err),
+                    gen_server:reply(From, {error, send_failed}),
                     {stop, normal, State_1}
             end;
         Err ->
             shutting_down(State_1),
             do_trace("Send failed... Reason: ~p~n", [Err]),
-            gen_server:reply(From, Err),
+            gen_server:reply(From, {error, send_failed}),
             {stop, normal, State_1}
     end.
 
@@ -1016,9 +1016,9 @@ upgrade_to_ssl(#state{socket = Socket,
                                   proxy_tunnel_setup = done},
             send_queued_requests(lists:reverse(Q), State_1);
         Err ->
-            do_trace("Upgrade to SSL socket failed. Reason: ~p~n", [Err]),
-            do_error_reply(State, Err),
-            Err
+            do_trace("Upgrade to SSL socket failed. Reson: ~p~n", [Err]),
+            do_error_reply(State, {error, send_failed}),
+            {error, send_failed}
     end.
 
 send_queued_requests([], State) ->
